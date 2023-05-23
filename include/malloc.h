@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <sys/mman.h>
 
 typedef struct s_block {
     size_t size;
@@ -17,7 +18,7 @@ typedef struct s_area {
     t_block *large;
 } t_area;
 
-extern t_area g_area;
+extern t_area area;
 
 void *malloc(size_t size);
 void free(void *ptr);

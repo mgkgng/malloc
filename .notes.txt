@@ -1,0 +1,31 @@
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+int munmap(void *addr, size_t length)
+
+mmap() creates a new mapping in the virtual address space of the calling process. The starting address for the new mapping is specified in addr. The length argument specifies the length of the mapping (which must be greater than 0).
+If addr is NULL, then the kernel chooses the (page-aligned) address at which to create the mapping; this is the most portable method of creating a new mapping. 
+The prot argument describes the desired memory protection of the mapping. It is either PROT_NONE or the bitwise OR of one or more of the following flags:
+    PROT_EXEC: Pages may be executed.
+    PROT_READ: Pages may be read.
+    PROT_WRITE: Pages may be written.
+    PROT_NONE: Pages may not be accessed.
+The flags argument determines whether updates to the mapping are visible to other processes mapping the same region, and whether updates are carried through to the underlying file.
+    MAP_SHARED (share this mapping, updates to the mapping are visible to other processes mapping the same region.)
+    MAP_SHARED_VALIDATE
+    MAP_PRIVATE
+    MAP_32BIT
+    MAP_ANON
+    MAP_ANONYMOUS (The mapping is not backed by any file; its contents are initialized to zero.)
+...
+
+munmap(): The munmap() system call deletes the mappings for the specified address range, and causes further references to addresses within the range to generate invalid memory references. The region is also automatically unmapped when the process is terminated. On the other hand, closing the file descriptor does not unmap the region.
+
+On success, mmap() returns a pointer to the mapped area. On error, the value MAP_FAILED (-1) is returned, and errno is set to indicate the error.
+On success, munmap() returns 0, on failure -1, and errno is set (probably to EINVAL).
+
+------------------------------------------------------
+File mapping?
+a file mapping refers to the technique of associating a file or a portion of a file with a region of virtual memory. This allows the contents of the file to be access directly from memory, as if they were stored in an array. It offers several advantages:
+1. Efficiency
+2. Simplified I/O (File mapping allows you to treat a file as a contiguous block of memory, simplifying I/O operations such as searching, copying or manipulating data within the file)
+3. Sharing and interprocess communication
+4. Zero-copy operations (data can be transferred between processes without intermediate buffering)

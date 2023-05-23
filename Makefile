@@ -8,7 +8,7 @@ NAME=libft_malloc_$(HOSTTYPE).so
 SYMLINK=libft_malloc.so
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror
-SRCS=src/malloc.c src/free.c src/realloc.c src/show_alloc_mem.c
+SRCS=src/malloc.c src/free.c src/realloc.c src/manager.c
 INCLUDE=-I include/
 OBJS=$(SRCS:.c=.o)
 LIBS=-lpthread
