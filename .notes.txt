@@ -23,9 +23,37 @@ On success, mmap() returns a pointer to the mapped area. On error, the value MAP
 On success, munmap() returns 0, on failure -1, and errno is set (probably to EINVAL).
 
 ------------------------------------------------------
+
 File mapping?
 a file mapping refers to the technique of associating a file or a portion of a file with a region of virtual memory. This allows the contents of the file to be access directly from memory, as if they were stored in an array. It offers several advantages:
 1. Efficiency
 2. Simplified I/O (File mapping allows you to treat a file as a contiguous block of memory, simplifying I/O operations such as searching, copying or manipulating data within the file)
 3. Sharing and interprocess communication
 4. Zero-copy operations (data can be transferred between processes without intermediate buffering)
+
+------------------------------------------------------
+
+Page size?
+
+The concept of 'page size' in computer memory relates to how the operating system manages memory. It's a fundamental part of the virtual memory system in modern computers. To understand it, you need to first understand virtual memory.
+
+Virtual Memory:
+Modern operating systems use a technique called virtual memory to give each process its own isolated memory space. This is different from the physical memory, which is the actual RAM installed in the computer. Each process sees a continuous range of memory addresses, but these virtual addresses don't map directly to physical addresses. Instead, the operating system and the CPU's memory management unit (MMU) translate or 'map' the virtual addresses to physical addresses. This allows the operating system to move data around in physical memory as needed, without having to change the virtual addresses used by the processes. It also allows the operating system to give each process its own isolated memory space, so that one process can't access the memory of another process. This is a key part of the security and stability of modern operating systems. 
+
+Page and Page Size:
+The unit of these mappings is a "page". The operating system divides the virtual memory into chunks of a fixed size, called "pages". Similarly, the physical memory (RAM) is divided into "page frames". The operating system maintains a page table for each process, which is a data structure that maps the process's virtual pages to page frames in physical memory. When a process memory addresses, the MMU uses the page table to translate the virtual address to a physical address. The size of a page is determined by the CPU architecture.
+
+Why Pages and Why Page Size Matters:
+1. Isolation: Virtual memory provides isolation between processes, which is essential for system stability and security. Each process has its own private virtual address space, so it can't read or write another process's memory.
+2. Efficient memory use: Not all of a process's virtual memory needs to be in physical memory all the time. Pages can be moved in and out of physical memory as needed, a process known as 'paging'. This allows the system to run programs whose total size is larger than the physical memory. It also allows the system to use physical memory more efficiently, by moving pages that aren't being used to disk. This is called 'swapping' or 'page swapping'.
+3. Memory management: It's easier to manage memory in chunks of a fixed size. When a process needs more memory, the operating system can allocate a whole number of pages. When a process is finished with a page, the operating system can free the whole page. This is more efficient than allocating and freeing memory in arbitrary sizes.
+
+In most systems, the page size is chosen as a balance between memory overhead and granularity of memory mangement. A smaller page size means more overhead, but finer granularity. A larger page size means less overhead, but coarser granularity. It is also influenced by the architecture of CPU's MMU.
+
+Stack and Heap:
+The concepts of memory paging and the stack/heap are two aspects of how computer systems manage memory, but they operate at different levels and have different purposes.
+1. Stack: the stack is used for static memory allocation. When a function is called, a block of memory isreserved for its varaibles and that memory is released when the function exits. This memory allocation/deallocation is automatic and managed by the compiler. Each thread in a program has its own stack.
+2 Heap: the heap is used for dynamic memory allocation. Programs can request blocks of memory from the heap at any time, and it's the programmer's responsibility to free that memory when it's no longer needed. The heap is shared accross threads in a program.
+
+The stack and the heap each occupy one or more pages of memory. When your program uses the stack or the heap, it's working with virtual memory address. The operating sytem's memory management unit translates these virtual addresses to physical addresses in real time. If your program accesses a part of the stack or the heap that isn't currently in physical memory (a "page fault"), the operating system will automatcially load the required page into memory. If there's not enough physical memory available, the operating system might move some less recently used pages back to disk storage.
+Therefore, while your program interacts directly with the stack and the heap, the concept of memory pages is mostly hidden from your code, handled by the operating system and the hardware. However, understanding memory paging can be useful for writing efficient code, because the performance of memory access can be affected by the underlying paging system.
