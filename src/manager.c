@@ -1,26 +1,33 @@
 #include "malloc.h"
 
-t_area *create_area(size_t size) {
-    size_t area_size = size + sizeof(t_area);
-    if (area_size % PAGE_SIZE)
-        area_size += PAGE_SIZE - (area_size % PAGE_SIZE);
-
-    t_area *res = (t_area *) mmap(0, area_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-    if (res == MAP_FAILED)
-        return (NULL);
-    res->area_size = area_size;
-    res->next = NULL;
-    res->tiny = NULL;
-    res->small = NULL; 
-    res->large = NULL;
-    return (res);
+t_zone *create_zone(t_zone **prev, int zone_type, size_t size) {
+    size_t zone_size = GET_ZONE_SIZE(zone_type, size);
+    t_zone *zone = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+    if (zone == MAP_FAILED)
+        return NULL;
+    if (!*prev)
+        zone->prev = NULL;
+    else {
+        zone->prev = *prev;
+        (*prev)->next = zone;
+    }
+    zone->size = zone_size;
+    zone->block = NULL;
+    zone->next = NULL;
+    return zone;
 }
 
-t_area *get_area() {
-    static t_area *area = NULL;
-    if (!area)
-        area = create_area(0);
-    return (area);
+t_zone *get_zone(int zone_type, size_t size) {
+    static t_heap heap = {0};
+
+    t_zone *zone = GET_ZONE(zone_type);
+    if (!zone || zone->size < size) {
+        zone = create_zone(zone, zone_type, size);
+        if (!zone)
+            return NULL;
+        MOVE_ZONE(zone_type);
+    }
+    return zone;
 }
 
 // Example:
@@ -33,7 +40,6 @@ t_area *get_area() {
 // 0xB0020 - 0xBBEEF : 48847 bytes
 // Total : 52698 bytes
 void show_alloc_mem() {
-    t_area *area = get_area();
     
     // blah blah ...
 

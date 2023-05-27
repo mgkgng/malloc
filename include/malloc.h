@@ -6,30 +6,50 @@
 
 #include "libft.h"
 
-#define TINY 128
-#define SMALL 1024
 #define PAGE_SIZE getpagesize()
+#define ALLOC_TINY PAGE_SIZE / 32
+#define ALLOC_SMALL PAGE_SIZE / 4
+#define ZONE_SMALL PAGE_SIZE * 4
+#define ZONE_MEDIUM PAGE_SIZE * 32
+
+#define GET_ZONE(x) (x == SMALL) ? heap.small : (x == MEDIUM) ? heap.medium : heap.large
+#define GET_ZONE_SIZE(x, y) (x == SMALL) ? ZONE_SMALL : (x == MEDIUM) ? ZONE_MEDIUM : y
+#define MOVE_ZONE(x) if (zone_type == SMALL) heap.small = zone; else if (zone_type == MEDIUM) heap.medium = zone; else heap.large = zone;
+
+enum ZONE_TYPE {
+    SMALL,
+    MEDIUM,
+    LARGE
+};
+
+enum CREATE_ZONE_TYPE {
+    EMPTY,
+    FULL
+};
 
 typedef struct s_block {
     size_t size;
-    int free;
-    void *ptr;
-    char data[1];
+    bool free;
     struct s_block *next;
 } t_block;
 
-typedef struct s_area {
-    size_t area_size;
-    struct s_area *next;
-    t_block *tiny;
-    t_block *small;
-    t_block *large;
-} t_area;
+typedef struct s_zone {
+    size_t size;
+    struct s_block *block;
+    struct s_zone *prev;
+    struct s_zone *next;
+} t_zone;
+
+typedef struct s_heap {
+    t_zone *small;
+    t_zone *medium;
+    t_zone *large;
+} t_heap;
 
 void *malloc(size_t size);
 void free(void *ptr);
 void *realloc(void *ptr, size_t size);
 
-t_area *create_area(size_t size);
-t_area *get_area();
+// t_area *create_area(size_t size);
+// t_area *get_area();
 void show_alloc_mem();
