@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 
 #include "libft.h"
+#include "ft_printf.h"
 
 #define PAGE_SIZE getpagesize()
 #define ALLOC_TINY PAGE_SIZE / 32
@@ -53,5 +54,6 @@ typedef struct s_heap {
 void *malloc(size_t size);
 void free(void *ptr);
 void *realloc(void *ptr, size_t size);
-
 void show_alloc_mem();
+t_zone *get_zone(int zone_type, size_t size);
+t_block *get_block(t_zone *zone, size_t size);
