@@ -17,6 +17,9 @@
 #define MOVE_ZONE(x) if (zone_type == SMALL) heap.small = zone; else if (zone_type == MEDIUM) heap.medium = zone; else heap.large = zone;
 
 #define BLOCK_SIZE(x) x + sizeof(t_block)
+#define DATA(x) (char *)(x + 1)
+#define BLOCK(x) (t_block *)((char *)x - sizeof(t_block))
+
 
 enum ZONE_TYPE {
     SMALL,
@@ -32,7 +35,6 @@ enum CREATE_ZONE_TYPE {
 typedef struct s_block {
     size_t size;
     bool free;
-    void *data;
     struct s_block *next;
 } t_block;
 
