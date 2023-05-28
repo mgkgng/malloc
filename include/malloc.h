@@ -5,9 +5,8 @@
 #include <sys/mman.h>
 
 #include "libft.h"
-#include "ft_printf.h"
 
-#define PAGE_SIZE getpagesize()
+#define PAGE_SIZE (size_t) getpagesize()
 #define ALLOC_TINY PAGE_SIZE / 32
 #define ALLOC_SMALL PAGE_SIZE / 4
 #define ZONE_SMALL PAGE_SIZE * 4
@@ -15,7 +14,6 @@
 
 #define GET_ZONE(x) (x == SMALL) ? heap.small : (x == MEDIUM) ? heap.medium : heap.large
 #define GET_ZONE_SIZE(x, y) (x == SMALL) ? ZONE_SMALL : (x == MEDIUM) ? ZONE_MEDIUM : y
-#define MOVE_ZONE(x) if (zone_type == SMALL) heap.small = zone; else if (zone_type == MEDIUM) heap.medium = zone; else heap.large = zone;
 
 #define BLOCK_SIZE(x) x + sizeof(t_block)
 #define DATA(x) (char *)(x + 1)
