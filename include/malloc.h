@@ -58,7 +58,14 @@ extern pthread_mutex_t lock;
 void *malloc(size_t size);
 void free(void *ptr);
 void *realloc(void *ptr, size_t size);
+
+void *malloc_helper(size_t size);
+void free_helper(void *ptr);
+void *realloc_helper(void *ptr, size_t size);
+
 void show_alloc_mem();
+
 t_zone *get_zone(int zone_type, size_t size);
 t_block *get_block(t_zone *zone, size_t size);
-void verify_zone_state(t_zone *zone);
+void verify_mem_state(t_block *block, t_zone *zone);
+void *split_block(t_block *block, size_t alloc_size);

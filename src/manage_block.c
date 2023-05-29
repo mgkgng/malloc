@@ -35,8 +35,11 @@ t_block *get_block(t_zone *zone, size_t size) {
     t_zone *curr = zone;
     while (curr) {
         t_block *block = find_free_block(curr, size);
-        if (block)
+        if (block) {
+            if (block->size - size > sizeof(t_block))
+                return split_block(block, size);
             return block;
+        }
         curr = curr->next;
     }
     return create_new_block(zone, size);

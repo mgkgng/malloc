@@ -29,26 +29,6 @@ bool is_zone_empty(t_zone *zone) {
     return true;
 }
 
-void verify_zone_state(t_zone *zone) {
-    int zone_type = zone->type;
-    if (is_zone_empty(zone)) {
-        t_zone *start = GET_ZONE(zone_type);
-        if (start == zone) {
-            if (zone_type == SMALL)
-                heap.small = zone->next;
-            else if (zone_type == MEDIUM)
-                heap.medium = zone->next;
-            else
-                heap.large = zone->next;
-        } else {
-            while (start->next != zone)
-                start = start->next;
-            start->next = zone->next;
-        }
-        munmap(zone, zone->size);
-    }
-}
-
 t_zone *get_zone(int zone_type, size_t size) {
     t_zone *zone = find_free_zone(GET_ZONE(zone_type), size);
     if (zone)
