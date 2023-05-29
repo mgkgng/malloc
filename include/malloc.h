@@ -28,11 +28,6 @@ enum ZONE_TYPE {
     LARGE
 };
 
-enum CREATE_ZONE_TYPE {
-    EMPTY,
-    FULL
-};
-
 typedef struct s_block {
     size_t size;
     bool free;
@@ -52,14 +47,8 @@ typedef struct s_heap {
     t_zone *small;
     t_zone *medium;
     t_zone *large;
-    size_t total;
+    long long int total;
 } t_heap;
-
-typedef struct s_history {
-    void *ptr;
-    size_t size;
-    struct s_history *next;
-} t_history;
 
 extern t_heap heap;
 extern pthread_mutex_t lock;

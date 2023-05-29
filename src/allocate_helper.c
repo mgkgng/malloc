@@ -5,6 +5,9 @@ void *malloc_helper(size_t size, bool realloc) {
     if (!zone)
         return NULL;
     t_block *block = get_block(zone, size);
+    block->free = false;
+    block->size = size;
+    
     void *ptr = DATA(block);
     manage_log("%s: %zu bytes at %p\n", (realloc) ? "Realloc" : "Malloc", size, ptr);
     return ptr;
