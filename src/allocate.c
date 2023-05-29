@@ -4,7 +4,7 @@ void *malloc(size_t size) {
     if (!size)
         return NULL;
     pthread_mutex_lock(&lock);
-    void *res = malloc_helper(size);
+    void *res = malloc_helper(size, false);
     pthread_mutex_unlock(&lock);
     return res;
 }

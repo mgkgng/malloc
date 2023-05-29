@@ -5,6 +5,14 @@ void ft_memcpy(void *dst, void *src, size_t size) {
         ((char *)dst)[size] = ((char *)src)[size];
 }
 
+int ft_strcmp(const char *s1, const char *s2) {
+	while (*s1 && *s2 && *s1 == *s2) {
+		s1++;
+		s2++;
+	}
+	return (unsigned char) *s1 - (unsigned char) *s2;
+}
+
 static int ft_putchar(char c) {
     write(1, &c, 1);
     return 1;

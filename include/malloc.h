@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <sys/mman.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "libft.h"
 
@@ -50,7 +52,14 @@ typedef struct s_heap {
     t_zone *small;
     t_zone *medium;
     t_zone *large;
+    size_t total;
 } t_heap;
+
+typedef struct s_history {
+    void *ptr;
+    size_t size;
+    struct s_history *next;
+} t_history;
 
 extern t_heap heap;
 extern pthread_mutex_t lock;
@@ -59,11 +68,13 @@ void *malloc(size_t size);
 void free(void *ptr);
 void *realloc(void *ptr, size_t size);
 
-void *malloc_helper(size_t size);
+void *malloc_helper(size_t size, bool realloc);
 void free_helper(void *ptr);
 void *realloc_helper(void *ptr, size_t size);
 
 void show_alloc_mem();
+void show_alloc_mem_ex(void *ptr);
+void manage_log(const char *format, ...);
 
 t_zone *get_zone(int zone_type, size_t size);
 t_block *get_block(t_zone *zone, size_t size);
