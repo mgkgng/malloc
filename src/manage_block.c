@@ -17,6 +17,7 @@ static t_block *create_new_block(t_zone *zone, size_t size) {
         block->size = size;
         block->free = false;
         block->next = NULL;
+        block->zone = zone;
         zone->block = block;
         zone->space -= BLOCK_SIZE(size);
         return block;

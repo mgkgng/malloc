@@ -1,0 +1,8 @@
+1. Debug (test 3 ~ )
+    - free (should free the page itself)
+    - allocation grand nombre
+    - realloc
+2. Malloc history (use log & env)
+3. calloc
+4. improve hex dump (hex dump notes)
+5. efficient makefile for test files (reference Matrix)

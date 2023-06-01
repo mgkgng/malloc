@@ -1,6 +1,8 @@
 #include "malloc.h"
 
 void show_alloc_mem() {
+    pthread_mutex_lock(&lock);
+
     t_zone *small_zone = heap.small;
     t_zone *medium_zone = heap.medium;
     t_zone *large_zone = heap.large;
@@ -28,7 +30,7 @@ void show_alloc_mem() {
         ft_printf("ZONE %d: %p\n", zone_count, medium_zone);
         t_block *block = medium_zone->block;
         while (block) {
-            ft_printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
+            printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
             total += block->size;
             block = block->next;
         }
@@ -43,7 +45,7 @@ void show_alloc_mem() {
         ft_printf("ZONE %d: %p\n", zone_count, large_zone);
         t_block *block = large_zone->block;
         while (block) {
-            ft_printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
+            printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
             total += block->size;
             block = block->next;
         }
@@ -52,9 +54,16 @@ void show_alloc_mem() {
     }
 
     ft_printf("Total : %d bytes\n", total);
+
+    pthread_mutex_unlock(&lock);
 }
 
 void show_alloc_mem_ex(void *ptr) {
+    if (!ptr)
+        return;
+
+    pthread_mutex_lock(&lock);
+
     t_block *block = BLOCK(ptr);
     size_t block_size = block->size + sizeof(t_block);
     unsigned char *byte_ptr = (unsigned char *) block;
@@ -73,6 +82,8 @@ void show_alloc_mem_ex(void *ptr) {
             printf("\n");
     }
     printf("\n");
+
+    pthread_mutex_unlock(&lock);
 }
 
 void manage_log(const char *format, ...) {

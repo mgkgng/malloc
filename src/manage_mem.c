@@ -25,10 +25,12 @@ void verify_mem_state(t_block *block, t_zone *zone) {
         if (empty && !curr->free)
             empty = false;
         if (curr == block) {
-            if (prev && prev->free)
+            if (prev && prev->free) {
                 curr = merge_block(prev, curr);
-            if (curr->next && curr->next->free)
+            }
+            if (curr->next && curr->next->free) {
                 curr = merge_block(curr, curr->next);
+            }
         }
         prev = curr;
         curr = curr->next;
@@ -50,5 +52,6 @@ void verify_mem_state(t_block *block, t_zone *zone) {
             start = start->next;
         start->next = zone->next;
     }
+
     munmap(zone, zone->size);
 }
