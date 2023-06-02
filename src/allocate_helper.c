@@ -29,3 +29,13 @@ void *realloc_helper(void *ptr, size_t size) {
     free_helper(ptr);
     return new_ptr;
 }
+
+void *calloc_helper(size_t count, size_t size) {
+    size_t total = count * size;
+    void *ptr = malloc_helper(total, false);
+    if (!ptr)
+        return NULL;
+    ft_bzero(ptr, total);
+    manage_log("Calloc: %zu bytes at %p\n", total, ptr);
+    return ptr;
+}

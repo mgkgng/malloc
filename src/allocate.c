@@ -23,3 +23,12 @@ void *realloc(void *ptr, size_t size) {
     pthread_mutex_unlock(&lock);
     return new_ptr;
 }
+
+void *calloc(size_t count, size_t size) {
+    if (!count || !size)
+        return NULL;
+    pthread_mutex_lock(&lock);
+    void *ptr = calloc_helper(count, size);
+    pthread_mutex_unlock(&lock);
+    return ptr;
+}
