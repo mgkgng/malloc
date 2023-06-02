@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "libft.h"
 
@@ -21,6 +22,9 @@
 #define BLOCK_SIZE(x) x + sizeof(t_block)
 #define DATA(x) (char *)(x + 1)
 #define BLOCK(x) (t_block *)((char *)x - sizeof(t_block))
+
+#define HEX 1
+#define ASCII 2
 
 enum ZONE_TYPE {
     SMALL,
@@ -63,7 +67,7 @@ void *realloc_helper(void *ptr, size_t size);
 void *calloc_helper(size_t count, size_t size);
 
 void show_alloc_mem();
-void show_alloc_mem_ex(void *ptr);
+void show_alloc_mem_ex(void *ptr, int mode);
 void manage_log(const char *format, ...);
 
 t_zone *get_zone(int zone_type, size_t size);

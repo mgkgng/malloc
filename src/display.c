@@ -58,7 +58,7 @@ void show_alloc_mem() {
     pthread_mutex_unlock(&lock);
 }
 
-void show_alloc_mem_ex(void *ptr) {
+void show_alloc_mem_ex(void *ptr, int mode) {
     if (!ptr)
         return;
 
@@ -68,18 +68,31 @@ void show_alloc_mem_ex(void *ptr) {
     size_t block_size = block->size + sizeof(t_block);
     unsigned char *byte_ptr = (unsigned char *) block;
 
+    printf("\nAddress: %p, Size: %zu\n", ptr, block_size);
+
     size_t i = 0;
-    printf("\033[0;31m");
-    for (; i < sizeof(t_block); i++) {
-        printf("%02x ", byte_ptr[i]);
-        if ((i + 1) % 16 == 0)
-            printf("\n");
-    }
-    printf("\033[0m");
     for (; i < block_size; i++) {
-        printf("%02x ", byte_ptr[i]);
-        if ((i + 1) % 16 == 0)
-            printf("\n");
+        printf((i < sizeof(t_block)) ? "\033[0;31m" : ""); // Put color for t_block part
+
+        if (i % 16 == 0) // Start a new line every 16 bytes
+            printf("\n%07zx ", i);
+
+        if (mode == HEX || mode == HEX + ASCII) // Print Hexadecimal representation
+            printf("%02x ", byte_ptr[i]);
+
+        if (mode == ASCII || mode == HEX + ASCII) { // Print ASCII representation
+            if (i % 16 == 8) { printf(" "); }
+            if (i % 16 == 0) { printf(" |"); }
+
+
+            if (isprint(byte_ptr[i]))
+                printf("%c", byte_ptr[i]);
+            else
+                printf(".");
+
+            if ((i + 1) % 16 == 0) { printf("|"); }
+        }
+        printf((i < sizeof(t_block)) ? "\033[0m" : "");
     }
     printf("\n");
 

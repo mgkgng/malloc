@@ -2,5 +2,3 @@
     - free (should free the page itself)
     - allocation grand nombre
     - realloc
-
-4. improve hex dump (hex dump notes)

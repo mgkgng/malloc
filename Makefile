@@ -10,11 +10,11 @@ CC := gcc
 CFLAGS := -Wall -Wextra -Werror
 SRCS := src/allocate.c src/manage_block.c src/manage_zone.c src/libft.c src/display.c src/manage_mem.c src/allocate_helper.c src/initialize.c
 TEST_FILES := $(wildcard tests/test*.c)
-TEST_EXEC_NAMES := $(patsubst tests/test%.c, $(BUILD_DIR)/test%, $(TEST_FILES))
+TEST_EXEC_NAMES := $(patsubst %.c,$(BUILD_DIR)/%,$(notdir $(TEST_FILES)))
 
 INCLUDE := -I include/
 OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:.c=.o))
-LIBS := -L$(BUILD_DIR) -lft_malloc_$(HOSTTYPE) -lpthread
+LIBS := -L$(BUILD_DIR) -lpthread
 
 all: $(NAME)
 
@@ -24,7 +24,8 @@ $(NAME): $(OBJS)
 test: $(TEST_EXEC_NAMES)
 
 $(BUILD_DIR)/test%: tests/test%.c $(NAME)
-	$(CC) $(INCLUDE) -o $@ $< $(LIBS)
+			@mkdir -p $(@D)
+			$(CC) $(INCLUDE) -o $@ $< $(NAME) -lpthread
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
