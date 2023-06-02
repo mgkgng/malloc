@@ -1,4 +1,2 @@
-1. Debug (test 3 ~ )
-    - free (should free the page itself)
-    - allocation grand nombre
-    - realloc
+1. check log & history display
+2. check again your knowledge about the distinction between virtual memory vs stack/heap

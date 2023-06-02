@@ -16,8 +16,9 @@
 #define ZONE_SMALL PAGE_SIZE * 4
 #define ZONE_MEDIUM PAGE_SIZE * 32
 
-#define GET_ZONE(x) (x == SMALL) ? heap.small : (x == MEDIUM) ? heap.medium : heap.large
-#define GET_ZONE_SIZE(x, y) (x == SMALL) ? ZONE_SMALL : (x == MEDIUM) ? ZONE_MEDIUM : y
+#define GET_ZONE(x) (x <= ZONE_SMALL) ? heap.small : (x <= ZONE_MEDIUM) ? heap.medium : heap.large
+#define GET_ZONE_SIZE(x, y) (x <= ZONE_SMALL) ? ZONE_SMALL : (x <= ZONE_MEDIUM) ? ZONE_MEDIUM : y
+#define GET_ZONE_TYPE(x) (x <= ALLOC_TINY) ? SMALL : (x <= ALLOC_SMALL) ? MEDIUM : LARGE
 
 #define BLOCK_SIZE(x) x + sizeof(t_block)
 #define DATA(x) (char *)(x + 1)
@@ -25,6 +26,8 @@
 
 #define HEX 1
 #define ASCII 2
+
+#define MAGIC 0x23581321
 
 enum ZONE_TYPE {
     SMALL,
@@ -36,6 +39,7 @@ typedef struct s_block {
     size_t size;
     bool free;
     void *zone;
+    size_t magic;
     struct s_block *next;
 } t_block;
 

@@ -11,13 +11,14 @@ static t_block *find_free_block(t_zone *zone, size_t size) {
 }
 
 static t_block *create_new_block(t_zone *zone, size_t size) {
-    t_block *block = zone->block;
+    t_block *block = (zone) ? zone->block : NULL;
     if (!block) {
         block = (t_block *)((char *)(zone + 1));
         block->size = size;
         block->free = false;
         block->next = NULL;
         block->zone = zone;
+        block->magic = MAGIC;
         zone->block = block;
         zone->space -= BLOCK_SIZE(size);
         return block;
@@ -32,7 +33,10 @@ static t_block *create_new_block(t_zone *zone, size_t size) {
     return block->next;
 }
 
+
 t_block *get_block(t_zone *zone, size_t size) {
+    if (size > LARGE)
+        return create_new_block(zone, size);
     t_zone *curr = zone;
     while (curr) {
         t_block *block = find_free_block(curr, size);

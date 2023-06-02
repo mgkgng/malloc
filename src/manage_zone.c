@@ -23,11 +23,16 @@ static t_zone *create_zone(int zone_type, size_t size) {
     return zone;
 }
 
-// TODO : having enough space doesn't mean that the zone is free for the block (consider fragmentation)
 static t_zone *find_free_zone(t_zone *zone, size_t size) {
     while (zone) {
-        if (zone->space >= BLOCK_SIZE(size))
-            return zone;
+        if (zone->space >= BLOCK_SIZE(size)) {
+            t_block *block = zone->block;
+            while (block) {
+                if (block->free && block->size >= size)
+                    return zone;
+                block = block->next;
+            }
+        }
         zone = zone->next;
     }
     return NULL;
@@ -43,6 +48,14 @@ bool is_zone_empty(t_zone *zone) {
 }
 
 t_zone *get_zone(int zone_type, size_t size) {
+    if (size >= LARGE) {
+        t_zone *zone = create_zone(LARGE, size);
+        if (!zone)
+            return NULL;
+        zone->next = heap.large;
+        heap.large = zone;
+        return zone;
+    }
     t_zone *zone = find_free_zone(GET_ZONE(zone_type), size);
     if (zone)
         return zone;
@@ -52,12 +65,9 @@ t_zone *get_zone(int zone_type, size_t size) {
     if (zone_type == SMALL) {
         new_zone->next = heap.small;
         heap.small = new_zone;
-    } else if (zone_type == MEDIUM) {
+    } else {
         new_zone->next = heap.medium;
         heap.medium = new_zone;
-    } else {
-        new_zone->next = heap.large;
-        heap.large = new_zone;
     }
     return new_zone;
 }

@@ -8,14 +8,14 @@ void show_alloc_mem() {
     t_zone *large_zone = heap.large;
 
     int total = 0;
-    ft_printf("SMALL ZONE\n");
+    if (small_zone)
+        ft_printf("SMALL ZONE\n");
     int zone_count = 1;
     while (small_zone) {
         ft_printf("ZONE %d: %p\n\n", zone_count, small_zone);
         t_block *block = small_zone->block;
         while (block) {
             printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
-            // ft_printf("%p - %p : %u bytes\n", DATA(block), DATA(block) + block->size, block->size);
             total += block->size;
             block = block->next;
         }
@@ -42,14 +42,9 @@ void show_alloc_mem() {
         ft_printf("LARGE ZONE\n");
     zone_count = 1;
     while (large_zone) {
-        ft_printf("ZONE %d: %p\n", zone_count, large_zone);
         t_block *block = large_zone->block;
-        while (block) {
-            printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
-            total += block->size;
-            block = block->next;
-        }
-        zone_count++;
+        printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
+        total += block->size;
         large_zone = large_zone->next;
     }
 

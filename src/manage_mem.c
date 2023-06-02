@@ -18,6 +18,8 @@ t_block *merge_block(t_block *b1, t_block *b2) {
 }
 
 void verify_mem_state(t_block *block, t_zone *zone) {
+    printf("compare! %p %p \n", block->zone, zone);
+
     bool empty = true;
     t_block *curr = zone->block;
     t_block *prev = NULL;
@@ -52,6 +54,15 @@ void verify_mem_state(t_block *block, t_zone *zone) {
             start = start->next;
         start->next = zone->next;
     }
-
+    printf("munmap: %p\n", zone);
     munmap(zone, zone->size);
+    printf("munmap: %p\n", zone);
+
+    printf("checking heap\n");
+    if (zone_type == SMALL)
+        printf("small: %p\n", heap.small);
+    else if (zone_type == MEDIUM)
+        printf("medium: %p\n", heap.medium);
+    else
+        printf("large: %p\n", heap.large);
 }

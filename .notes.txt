@@ -57,3 +57,8 @@ The concepts of memory paging and the stack/heap are two aspects of how computer
 
 The stack and the heap each occupy one or more pages of memory. When your program uses the stack or the heap, it's working with virtual memory address. The operating sytem's memory management unit translates these virtual addresses to physical addresses in real time. If your program accesses a part of the stack or the heap that isn't currently in physical memory (a "page fault"), the operating system will automatcially load the required page into memory. If there's not enough physical memory available, the operating system might move some less recently used pages back to disk storage.
 Therefore, while your program interacts directly with the stack and the heap, the concept of memory pages is mostly hidden from your code, handled by the operating system and the hardware. However, understanding memory paging can be useful for writing efficient code, because the performance of memory access can be affected by the underlying paging system.
+
+----------------------------------------------------
+
+Hex dump?
+A hex dump is a way of viewing binary data in a format that displays each byte as a two-digit hexadecimal number. It's a common method for debugging and understanding data structures in memory.
