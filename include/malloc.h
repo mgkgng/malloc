@@ -10,14 +10,21 @@
 
 #include "libft.h"
 
+enum ZONE_TYPE {
+    SMALL,
+    MEDIUM,
+    LARGE
+};
+
 #define PAGE_SIZE (size_t) getpagesize()
-#define ALLOC_TINY PAGE_SIZE / 32
-#define ALLOC_SMALL PAGE_SIZE / 4
 #define ZONE_SMALL PAGE_SIZE * 4
 #define ZONE_MEDIUM PAGE_SIZE * 32
+#define ALLOC_TINY ZONE_SMALL / 128
+#define ALLOC_SMALL ZONE_MEDIUM / 128
 
-#define GET_ZONE(x) (x <= ZONE_SMALL) ? heap.small : (x <= ZONE_MEDIUM) ? heap.medium : heap.large
-#define GET_ZONE_SIZE(x, y) (x <= ZONE_SMALL) ? ZONE_SMALL : (x <= ZONE_MEDIUM) ? ZONE_MEDIUM : y
+#define GET_HEAP_BY_SIZE(x) (x <= ALLOC_TINY) ? heap.small : (x <= ALLOC_SMALL) ? heap.medium : heap.large
+#define GET_HEAP_BY_TYPE(x) (x == SMALL) ? heap.small : (x == MEDIUM) ? heap.medium : heap.large
+#define GET_ZONE_SIZE(x, y) (x <= ALLOC_TINY) ? ZONE_SMALL : (x <= ALLOC_SMALL) ? ZONE_MEDIUM : y
 #define GET_ZONE_TYPE(x) (x <= ALLOC_TINY) ? SMALL : (x <= ALLOC_SMALL) ? MEDIUM : LARGE
 
 #define BLOCK_SIZE(x) x + sizeof(t_block)
@@ -28,12 +35,6 @@
 #define ASCII 2
 
 #define MAGIC 0x23581321
-
-enum ZONE_TYPE {
-    SMALL,
-    MEDIUM,
-    LARGE
-};
 
 typedef struct s_block {
     size_t size;

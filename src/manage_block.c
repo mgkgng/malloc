@@ -33,19 +33,14 @@ static t_block *create_new_block(t_zone *zone, size_t size) {
     return block->next;
 }
 
-
 t_block *get_block(t_zone *zone, size_t size) {
     if (size > LARGE)
         return create_new_block(zone, size);
-    t_zone *curr = zone;
-    while (curr) {
-        t_block *block = find_free_block(curr, size);
-        if (block) {
-            if (block->size - size > sizeof(t_block))
-                return split_block(block, size);
-            return block;
-        }
-        curr = curr->next;
+    t_block *block = find_free_block(zone, size);
+    if (block) {
+        if (block->size - size > sizeof(t_block))
+            return split_block(block, size);
+        return block;
     }
     return create_new_block(zone, size);
 }

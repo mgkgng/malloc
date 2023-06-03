@@ -8,6 +8,8 @@ void *split_block(t_block *block, size_t alloc_size) {
     new_block->next = block->next;
     block->size = alloc_size;
     block->next = new_block;
+    block->free = false;
+    ((t_zone *) block->zone)->space -= BLOCK_SIZE(alloc_size);
     return block;
 }
 
@@ -18,8 +20,6 @@ t_block *merge_block(t_block *b1, t_block *b2) {
 }
 
 void verify_mem_state(t_block *block, t_zone *zone) {
-    printf("compare! %p %p \n", block->zone, zone);
-
     bool empty = true;
     t_block *curr = zone->block;
     t_block *prev = NULL;
@@ -27,12 +27,10 @@ void verify_mem_state(t_block *block, t_zone *zone) {
         if (empty && !curr->free)
             empty = false;
         if (curr == block) {
-            if (prev && prev->free) {
+            if (prev && prev->free)
                 curr = merge_block(prev, curr);
-            }
-            if (curr->next && curr->next->free) {
+            if (curr->next && curr->next->free)
                 curr = merge_block(curr, curr->next);
-            }
         }
         prev = curr;
         curr = curr->next;
@@ -41,7 +39,7 @@ void verify_mem_state(t_block *block, t_zone *zone) {
         return ;
 
     int zone_type = zone->type;
-    t_zone *start = GET_ZONE(zone_type);
+    t_zone *start = GET_HEAP_BY_TYPE(zone_type);
     if (start == zone) {
         if (zone_type == SMALL)
             heap.small = zone->next;
@@ -54,15 +52,6 @@ void verify_mem_state(t_block *block, t_zone *zone) {
             start = start->next;
         start->next = zone->next;
     }
-    printf("munmap: %p\n", zone);
-    munmap(zone, zone->size);
-    printf("munmap: %p\n", zone);
 
-    printf("checking heap\n");
-    if (zone_type == SMALL)
-        printf("small: %p\n", heap.small);
-    else if (zone_type == MEDIUM)
-        printf("medium: %p\n", heap.medium);
-    else
-        printf("large: %p\n", heap.large);
+    munmap(zone, zone->size);
 }

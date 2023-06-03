@@ -8,5 +8,6 @@ int main() {
         addr[0] = 42;
         free(addr);
     }
+    show_alloc_mem();
     return (0);
 }

@@ -12,7 +12,7 @@ void show_alloc_mem() {
         ft_printf("SMALL ZONE\n");
     int zone_count = 1;
     while (small_zone) {
-        ft_printf("ZONE %d: %p\n\n", zone_count, small_zone);
+        printf("ZONE %d: %p\n\n", zone_count, small_zone);
         t_block *block = small_zone->block;
         while (block) {
             printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
@@ -27,7 +27,7 @@ void show_alloc_mem() {
         ft_printf("MEDIUM ZONE\n");
     zone_count = 1;
     while (medium_zone) {
-        ft_printf("ZONE %d: %p\n", zone_count, medium_zone);
+        printf("ZONE %d: %p\n", zone_count, medium_zone);
         t_block *block = medium_zone->block;
         while (block) {
             printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
