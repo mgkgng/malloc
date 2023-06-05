@@ -3,9 +3,9 @@
 #include <string.h>
 
 int main() {
-    char *ptr = calloc(256, 3);
-    
-    show_alloc_mem_ex(ptr, HEX);
+    char *addr = malloc(1);
+    printf("heap total: %llu\n", heap.total / getpagesize());
 
-    printf("page size: %d\n", getpagesize());
+    char *ptr = calloc(256, 3);
+    // display_log();
 }

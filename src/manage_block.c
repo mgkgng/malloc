@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-static t_block *find_free_block(t_zone *zone, size_t size) {
+t_block *find_free_block(t_zone *zone, size_t size) {
     t_block *block = zone->block;
     while (block) {
         if (block->free && block->size >= size)
@@ -10,7 +10,7 @@ static t_block *find_free_block(t_zone *zone, size_t size) {
     return NULL;
 }
 
-static t_block *create_new_block(t_zone *zone, size_t size) {
+t_block *create_new_block(t_zone *zone, size_t size) {
     t_block *block = (zone) ? zone->block : NULL;
     if (!block) {
         block = (t_block *)((char *)(zone + 1));
@@ -34,7 +34,7 @@ static t_block *create_new_block(t_zone *zone, size_t size) {
 }
 
 t_block *get_block(t_zone *zone, size_t size) {
-    if (size > LARGE)
+    if (size > ALLOC_SMALL)
         return create_new_block(zone, size);
     t_block *block = find_free_block(zone, size);
     if (block) {

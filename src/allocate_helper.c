@@ -17,7 +17,6 @@ void free_helper(void *ptr) {
         return;
     }
     t_zone *zone = block->zone;
-    printf("free, zone address: %p\n", zone);
     block->free = true;
     manage_log("Free: %zu bytes at %p\n", block->size, ptr);
     verify_mem_state(block, zone);

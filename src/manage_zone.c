@@ -1,27 +1,30 @@
 #include "malloc.h"
 
+int count = 0;
+
+
 static t_zone *create_zone(int zone_type, size_t size) {
-    static long long int rlim = 0;
+    long long int rlim = 0;
+    static int count[3] = {0, 0, 0};
     if (!rlim) {
         struct rlimit rlim_struct;
         getrlimit(RLIMIT_AS, &rlim_struct);
         rlim = rlim_struct.rlim_cur;
     }
 
-    size_t zone_size = GET_ZONE_SIZE(zone_type, size);
+    size_t zone_size = GET_ZONE_SIZE(size);
     if (heap.total + (long long int) zone_size > rlim)
         return NULL;
     t_zone *zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-    printf("ZONE CREATED: %p\n", zone);
+    // printf("ZONE SIZE: %zu\n", zone_size);
+    // printf("ZONE CREATED: %p, ZONE COUNT: %d\n", zone, ++count[zone_type]);
     if (zone == MAP_FAILED)
         return NULL;
     zone->space = zone_size - sizeof(t_zone);
     zone->block = NULL;
     zone->next = NULL;
     zone->type = zone_type;
-    printf("zone type: %d\n", zone_type);
     zone->size = zone_size;
-    printf("zone size: %zu\n", zone_size);
     heap.total += zone_size;
     return zone;
 }
@@ -60,18 +63,14 @@ t_zone *get_zone(int zone_type, size_t size) {
         return zone;
     }
     t_zone *zone = find_free_zone(GET_HEAP_BY_TYPE(zone_type), size);
-    if (zone) {
-        printf("found free zone\n");
+    if (zone)
         return zone;
-    }
     t_zone *new_zone = create_zone(zone_type, size);
     if (!new_zone)
         return NULL;
     if (zone_type == SMALL) {
-        printf("small zone created\n");
         new_zone->next = heap.small;
         heap.small = new_zone;
-        printf("small zone: %p\n", heap.small);
     } else {
         new_zone->next = heap.medium;
         heap.medium = new_zone;

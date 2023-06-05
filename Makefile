@@ -7,7 +7,7 @@ endif
 BUILD_DIR := build
 NAME := $(BUILD_DIR)/libft_malloc_$(HOSTTYPE).so
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 SRCS := src/allocate.c src/manage_block.c src/manage_zone.c src/libft.c src/display.c src/manage_mem.c src/allocate_helper.c src/initialize.c
 TEST_FILES := $(wildcard tests/test*.c)
 TEST_EXEC_NAMES := $(patsubst %.c,$(BUILD_DIR)/%,$(notdir $(TEST_FILES)))

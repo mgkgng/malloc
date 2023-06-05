@@ -24,7 +24,7 @@ enum ZONE_TYPE {
 
 #define GET_HEAP_BY_SIZE(x) (x <= ALLOC_TINY) ? heap.small : (x <= ALLOC_SMALL) ? heap.medium : heap.large
 #define GET_HEAP_BY_TYPE(x) (x == SMALL) ? heap.small : (x == MEDIUM) ? heap.medium : heap.large
-#define GET_ZONE_SIZE(x, y) (x <= ALLOC_TINY) ? ZONE_SMALL : (x <= ALLOC_SMALL) ? ZONE_MEDIUM : y
+#define GET_ZONE_SIZE(x) (x <= ALLOC_TINY) ? ZONE_SMALL : (x <= ALLOC_SMALL) ? ZONE_MEDIUM : x
 #define GET_ZONE_TYPE(x) (x <= ALLOC_TINY) ? SMALL : (x <= ALLOC_SMALL) ? MEDIUM : LARGE
 
 #define BLOCK_SIZE(x) x + sizeof(t_block)
@@ -74,6 +74,7 @@ void *calloc_helper(size_t count, size_t size);
 void show_alloc_mem();
 void show_alloc_mem_ex(void *ptr, int mode);
 void manage_log(const char *format, ...);
+void display_log();
 
 t_zone *get_zone(int zone_type, size_t size);
 t_block *get_block(t_zone *zone, size_t size);

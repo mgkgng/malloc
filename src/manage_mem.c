@@ -35,10 +35,11 @@ void verify_mem_state(t_block *block, t_zone *zone) {
         prev = curr;
         curr = curr->next;
     }
-    if (!empty)
-        return ;
 
     int zone_type = zone->type;
+    if (!empty || (!zone->next && zone_type < LARGE)) {
+        return ;
+    }
     t_zone *start = GET_HEAP_BY_TYPE(zone_type);
     if (start == zone) {
         if (zone_type == SMALL)
@@ -52,6 +53,5 @@ void verify_mem_state(t_block *block, t_zone *zone) {
             start = start->next;
         start->next = zone->next;
     }
-
     munmap(zone, zone->size);
 }

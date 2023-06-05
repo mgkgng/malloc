@@ -120,6 +120,16 @@ void manage_log(const char *format, ...) {
 }
 
 void display_log() {
+    static char *debug = NULL;
+    static bool debug_init = false;
+
+    if (!debug_init) {
+        debug = getenv("MALLOC_DEBUG");
+        debug_init = true;
+    }
+    if (!debug || ft_strcmp(debug, "1") != 0)
+        return;
+
     FILE *log_file = fopen("malloc.log", "r");
     if (log_file == NULL) {
         perror("Failed to open log file");
@@ -129,9 +139,8 @@ void display_log() {
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-    while ((read = getline(&line, &len, log_file)) != -1) {
-        ft_printf("%s", line);
-    }
+    while ((read = getline(&line, &len, log_file)) != -1)
+        printf("%s", line);
 
     fclose(log_file);
     if (line)
