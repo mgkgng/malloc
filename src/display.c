@@ -14,7 +14,7 @@ void show_alloc_mem() {
     while (small_zone) {
         printf("ZONE %d: %p\n\n", zone_count, small_zone);
         t_block *block = small_zone->block;
-        while (block) {
+        while (block && !block->free) {
             printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
             total += block->size;
             block = block->next;
@@ -29,7 +29,7 @@ void show_alloc_mem() {
     while (medium_zone) {
         printf("ZONE %d: %p\n", zone_count, medium_zone);
         t_block *block = medium_zone->block;
-        while (block) {
+        while (block && !block->free) {
             printf("%p - %p : %zu bytes\n", DATA(block), DATA(block) + block->size, block->size);
             total += block->size;
             block = block->next;
